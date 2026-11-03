@@ -1,0 +1,26 @@
+{
+  "source_roots": [
+    "ICDE_TQNet_PhysicsResidualKV_All_20261015",
+    "ICDE_PhysicsResidualKV_MultiDataset_20261014",
+    "ICDE_PHRM_PhysicalSupportValidation_20261020",
+    "ICDE_PHRM_FinalEvidence_20261017",
+    "ICDE_PHRM_FinalSensitivity_20261017",
+    "ICDE_PHRM_ThreeClaims_GPU23_20261023",
+    "ICDE_Baselines_Ablations_20261016",
+    "TQNet_PhysicsResidualKV_PEMS08_FINAL_20261014",
+    "TQNet_PhysicsResidualKV_PEMS08_ICDE_20261014"
+  ],
+  "included_python_files": 116,
+  "scope": "algorithm source only",
+  "excluded": [
+    "datasets",
+    "caches",
+    "checkpoints",
+    "weights",
+    "results",
+    "logs",
+    "plots",
+    "run configs",
+    "third-party vendor trees"
+  ]
+}
