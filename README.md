@@ -1,4 +1,4 @@
-# PHRM ICDE Reproducibility — Algorithm Source Only
+# PHRM  Reproducibility — Algorithm Source Only
 
 This archive contains selected Python source files for the PHRM/TQNet forecasting method and its support construction, residual-memory retrieval, adapter, and ablation logic. Source files remain grouped by their original project directory under `src/` so their provenance and relative imports are visible.
 
