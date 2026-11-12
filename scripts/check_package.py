@@ -37,7 +37,9 @@ def main() -> int:
 
     bad_names = [
         path for path in REPO.rglob("*")
-        if "icde" in path.name.lower() or re.search(r"(?<!\d)20\d{6,8}(?!\d)", path.name)
+        if ".git" not in path.parts
+        and "__pycache__" not in path.parts
+        and ("icde" in path.name.lower() or re.search(r"(?<!\d)20\d{6,8}(?!\d)", path.name))
     ]
     if bad_names:
         print("Found a path name containing ICDE or a date stamp:")

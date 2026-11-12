@@ -28,11 +28,11 @@ The reported table summarizes four forecast horizons and three seeds per dataset
 - A result validator and table summarizer in [`scripts/summarize_main_results.py`](scripts/summarize_main_results.py).
 - SHA256 inventories for source files and for the external data, physical supports, and baseline checkpoints referenced by the transferred experiment records.
 
-The server source inventory contained 428 files whose recorded SHA256 values matched the files provided for this package. Only the selected seven main-method source roots were copied. Remote paths, server environment records, logs, checkpoints, raw data, and ablation code are excluded.
+The server source inventory contained 428 files whose recorded SHA256 values matched the files provided for this package. Only the selected seven main-method source roots were copied. Remote paths, server environment records, logs, raw data, and ablation code are excluded. The 12 matched Electricity baseline checkpoints are included under `data/checkpoints/Electricity/`; the other 72 historical checkpoints remain external.
 
 ## Inputs required
 
-Large data, graph, and checkpoint assets are not stored in Git. Put the exact files listed in [`manifests/reference_artifact_hashes.csv`](manifests/reference_artifact_hashes.csv) under the portable paths below. `scripts/preflight.py` checks the required data and graph hashes against `configs/main_experiments.json`; the runner checks the external Electricity checkpoints are present.
+Raw data and physical-support files are not stored in Git. Put the exact files listed in [`manifests/reference_artifact_hashes.csv`](manifests/reference_artifact_hashes.csv) under the portable paths below. `scripts/preflight.py` checks the required data and graph hashes against `configs/main_experiments.json`; the runner verifies the 12 included Electricity checkpoints against their reference hashes.
 
 ```text
 data/
@@ -51,13 +51,11 @@ data/
 │   ├── Electricity.csv
 │   └── Weather_semantic.json
 ├── checkpoints/
-│   ├── PEMS03/h12/seed2022.pth
-│   ├── PEMS04/h12/seed2022.pth
-│   ├── PEMS07/h12/seed2022.pth
-│   ├── PEMS08/h12/seed2022.pth
-│   ├── Solar/h96/seed2022.pth
-│   ├── Electricity/h96/seed2022.pth
-│   └── Weather/h96/seed2022.pth
+│   └── Electricity/
+│       ├── h96/seed{2022,2023,2024}.pth
+│       ├── h192/seed{2022,2023,2024}.pth
+│       ├── h336/seed{2022,2023,2024}.pth
+│       └── h720/seed{2022,2023,2024}.pth
 └── pems08/
     └── dataset/
         ├── PEMS08_data.npz
@@ -101,7 +99,7 @@ Or run one dataset and a subset of its cells:
 python scripts/run_main.py --project-root data --datasets PEMS03 --horizons 12 24 --seeds 2022
 ```
 
-The runner records commands, source hashes, input hashes, software versions, device details, checkpoints, logs, and result hashes in `data/run_manifest.json`. Training logs and generated artifacts stay outside Git. Existing local checkpoints are not overwritten. For an exact rerun using the 84 transferred baseline weights, place them under `data/checkpoints/{dataset}/...` as listed in the manifest and pass `--reuse-baselines`; the runner verifies their SHA256 values before training.
+The runner records commands, source hashes, input hashes, software versions, device details, checkpoints, logs, and result hashes in `data/run_manifest.json`. Training logs and generated artifacts stay outside Git. Existing local checkpoints are not overwritten. The 12 Electricity weights are already at their required paths. For an exact rerun using all 84 transferred baseline weights, add the other 72 files under `data/checkpoints/{dataset}/...` as listed in the manifest and pass `--reuse-baselines`; the runner verifies their SHA256 values before training.
 
 Summarize completed runs and verify that every configured cell has paired baseline and PHRM test metrics:
 
@@ -113,7 +111,7 @@ Outputs are written under `data/results/`. The summary first averages each seed'
 
 ## Reproducibility limits
 
-The transferred package does not include the 14 raw-data/physical-support files or the 84 historical baseline checkpoints. Their expected hashes and portable filenames are recorded in the manifest. Electricity requires its 12 matching TQNet baseline checkpoints because its source snapshot has no baseline-training entry point. For exact reproduction of the originally recorded model pairs, obtain the referenced checkpoints. Freshly retrained baselines can produce small numerical differences across PyTorch, CUDA, driver, and GPU versions.
+The repository includes the 12 Electricity baseline checkpoints, but not the 14 raw-data/physical-support files or the other 72 historical baseline checkpoints. Their expected hashes and portable filenames are recorded in the manifest. Electricity requires its matching TQNet checkpoints because its source snapshot has no baseline-training entry point. For exact reproduction of all originally recorded model pairs, obtain the remaining referenced checkpoints. Freshly retrained baselines can produce small numerical differences across PyTorch, CUDA, driver, and GPU versions.
 
 The repository does not claim a complete rerun of the manuscript results until the external inputs are supplied and every configured cell completes. Use `data/run_manifest.json` and the generated `result.json` files to audit a run.
 

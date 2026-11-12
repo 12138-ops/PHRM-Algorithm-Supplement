@@ -1,6 +1,6 @@
 # Data, physical supports, and checkpoints
 
-The Git repository contains code and reference hashes, not large data or checkpoint binaries. Put assets under `data/` and retain the filenames and checksums in [`manifests/reference_artifact_hashes.csv`](../manifests/reference_artifact_hashes.csv). The expected hashes are also embedded for each data/support input in [`configs/main_experiments.json`](../configs/main_experiments.json).
+The Git repository contains code, reference hashes, and the 12 matched Electricity baseline checkpoints. Raw datasets, physical-support files, and the other 72 historical checkpoints remain external. Keep the filenames and checksums in [`manifests/reference_artifact_hashes.csv`](../manifests/reference_artifact_hashes.csv); expected hashes for data/support inputs are also embedded in [`configs/main_experiments.json`](../configs/main_experiments.json).
 
 | Dataset | Raw input path | Physical-support path | Nodes | Split | Horizons |
 | --- | --- | --- | ---: | --- | --- |
@@ -16,15 +16,15 @@ All runs use lookback 96 and seeds 2022, 2023, and 2024. The archive formats, ch
 
 ## Electricity baseline checkpoints
 
-Electricity needs 12 paired TQNet checkpoints. Store them as:
+The repository includes all 12 paired Electricity TQNet checkpoints at:
 
 ```text
 data/checkpoints/Electricity/h{horizon}/seed{seed}.pth
 ```
 
-For example, `h96/seed2022.pth`. Each checkpoint must match the TQNet architecture used by the Electricity source root. Expected SHA256 values and byte sizes are listed in the reference artifact manifest.
+Each checkpoint must match the TQNet architecture used by the Electricity source root. Their SHA256 values and byte sizes are listed in the reference artifact manifest, and `scripts/run_main.py` verifies them before use.
 
-The root runner trains paired TQNet baselines for the other six datasets by default. To use the exact 84 historical paired baselines instead, place them under `data/checkpoints/{dataset}/h{horizon}/seed{seed}.pth` using the entries in the reference artifact manifest and pass `--reuse-baselines`. The runner checks each file against its expected SHA256 before using it. Electricity always uses its 12 reference checkpoints.
+The root runner trains paired TQNet baselines for the other six datasets by default. To use all 84 historical paired baselines, add the remaining 72 files under `data/checkpoints/{dataset}/h{horizon}/seed{seed}.pth` using the entries in the reference artifact manifest and pass `--reuse-baselines`. The runner checks each file against its expected SHA256 before using it. Electricity always uses its 12 included reference checkpoints.
 
 ## Validation
 
@@ -34,4 +34,4 @@ Run a strict data/support hash check before training:
 python scripts/preflight.py --project-root data
 ```
 
-The runner refuses to start if an input is missing or differs from the reference hash. Do not put data, graphs, weights, logs, or generated results in Git. Keep the generated `data/run_manifest.json`, the per-cell `result.json` files, and their hashes with the experiment record.
+The runner refuses to start if an input is missing or differs from the reference hash. Raw data, graphs, logs, and generated results are not tracked in Git. The 12 reference Electricity checkpoints are intentionally tracked; other optional baseline weights remain ignored by default. Keep the generated `data/run_manifest.json`, per-cell `result.json` files, and their hashes with the experiment record.

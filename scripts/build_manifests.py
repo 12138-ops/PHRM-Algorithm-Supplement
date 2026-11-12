@@ -19,6 +19,25 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def is_packaged_file(path: Path, checksum_path: Path) -> bool:
+    generated_parts = {".git", "__pycache__", ".pytest_cache", ".venv", "venv"}
+    if (
+        not path.is_file()
+        or path == checksum_path
+        or any(part in generated_parts for part in path.parts)
+        or path.suffix in {".pyc", ".pyo"}
+    ):
+        return False
+    relative = path.relative_to(REPO)
+    if relative.parts[:1] == ("data",):
+        return (
+            len(relative.parts) == 5
+            and relative.parts[:3] == ("data", "checkpoints", "Electricity")
+            and relative.suffix == ".pth"
+        )
+    return True
+
+
 def main() -> None:
     MANIFESTS.mkdir(exist_ok=True)
     inventory_path = MANIFESTS / "source_inventory.csv"
@@ -32,7 +51,7 @@ def main() -> None:
     checksum_path = MANIFESTS / "SHA256SUMS.txt"
     files = sorted(
         path for path in REPO.rglob("*")
-        if path.is_file() and path != checksum_path and ".git" not in path.parts
+        if is_packaged_file(path, checksum_path)
     )
     with checksum_path.open("w", encoding="utf-8", newline="\n") as stream:
         stream.write("".join(
