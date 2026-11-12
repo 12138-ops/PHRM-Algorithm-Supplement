@@ -19,7 +19,19 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def is_packaged_file(path: Path, checksum_path: Path) -> bool:
+def included_reference_artifacts() -> set[str]:
+    manifest = MANIFESTS / "reference_artifact_hashes.csv"
+    included: set[str] = set()
+    with manifest.open(newline="", encoding="utf-8-sig") as stream:
+        for row in csv.DictReader(stream):
+            if row["kind"] in {"raw_data", "physical_support"} or (
+                row["dataset"] == "Electricity" and row["kind"] == "baseline_checkpoint"
+            ):
+                included.add((Path("data") / row["path"]).as_posix())
+    return included
+
+
+def is_packaged_file(path: Path, checksum_path: Path, packaged_data: set[str]) -> bool:
     generated_parts = {".git", "__pycache__", ".pytest_cache", ".venv", "venv"}
     if (
         not path.is_file()
@@ -30,11 +42,7 @@ def is_packaged_file(path: Path, checksum_path: Path) -> bool:
         return False
     relative = path.relative_to(REPO)
     if relative.parts[:1] == ("data",):
-        return (
-            len(relative.parts) == 5
-            and relative.parts[:3] == ("data", "checkpoints", "Electricity")
-            and relative.suffix == ".pth"
-        )
+        return relative.as_posix() in packaged_data
     return True
 
 
@@ -49,9 +57,10 @@ def main() -> None:
             writer.writerow((path.relative_to(REPO).as_posix(), path.stat().st_size, sha256(path), "python_source"))
 
     checksum_path = MANIFESTS / "SHA256SUMS.txt"
+    packaged_data = included_reference_artifacts()
     files = sorted(
         path for path in REPO.rglob("*")
-        if is_packaged_file(path, checksum_path)
+        if is_packaged_file(path, checksum_path, packaged_data)
     )
     with checksum_path.open("w", encoding="utf-8", newline="\n") as stream:
         stream.write("".join(

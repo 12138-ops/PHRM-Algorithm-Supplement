@@ -26,13 +26,13 @@ The reported table summarizes four forecast horizons and three seeds per dataset
 - Paired TQNet baseline and PHRM launch workflow in [`scripts/run_main.py`](scripts/run_main.py).
 - Input hash and file checks in [`scripts/preflight.py`](scripts/preflight.py).
 - A result validator and table summarizer in [`scripts/summarize_main_results.py`](scripts/summarize_main_results.py).
-- SHA256 inventories for source files and for the external data, physical supports, and baseline checkpoints referenced by the transferred experiment records.
+- SHA256 inventories for source files and the reference data, physical supports, and baseline checkpoints.
 
-The server source inventory contained 428 files whose recorded SHA256 values matched the files provided for this package. Only the selected seven main-method source roots were copied. Remote paths, server environment records, logs, raw data, and ablation code are excluded. The 12 matched Electricity baseline checkpoints are included under `data/checkpoints/Electricity/`; the other 72 historical checkpoints remain external.
+The server source inventory contained 428 files whose recorded SHA256 values matched the files provided for this package. Only the selected seven main-method source roots were copied. Remote paths, server environment records, logs, and ablation code are excluded. All 14 raw-data/physical-support assets and the 12 matched Electricity baseline checkpoints are included under `data/`; the other 72 historical checkpoints remain external.
 
 ## Inputs required
 
-Raw data and physical-support files are not stored in Git. Put the exact files listed in [`manifests/reference_artifact_hashes.csv`](manifests/reference_artifact_hashes.csv) under the portable paths below. `scripts/preflight.py` checks the required data and graph hashes against `configs/main_experiments.json`; the runner verifies the 12 included Electricity checkpoints against their reference hashes.
+The 14 raw-data and physical-support files and all 12 Electricity checkpoints are stored at the portable paths below. `scripts/preflight.py` checks every required data/support hash against `configs/main_experiments.json`; the runner verifies the Electricity checkpoint hashes before use.
 
 ```text
 data/
@@ -113,7 +113,7 @@ Outputs are written under `data/results/`. The summary first averages each seed'
 
 The repository includes the 12 Electricity baseline checkpoints, but not the 14 raw-data/physical-support files or the other 72 historical baseline checkpoints. Their expected hashes and portable filenames are recorded in the manifest. Electricity requires its matching TQNet checkpoints because its source snapshot has no baseline-training entry point. For exact reproduction of all originally recorded model pairs, obtain the remaining referenced checkpoints. Freshly retrained baselines can produce small numerical differences across PyTorch, CUDA, driver, and GPU versions.
 
-The repository does not claim a complete rerun of the manuscript results until the external inputs are supplied and every configured cell completes. Use `data/run_manifest.json` and the generated `result.json` files to audit a run.
+The repository does not claim a complete rerun of the manuscript results until every configured cell completes. The included data/support assets and Electricity checkpoints pass the repository's hash checks. Use `data/run_manifest.json` and the generated `result.json` files to audit a run.
 
 ## Source and package checks
 

@@ -1,6 +1,6 @@
 # Data, physical supports, and checkpoints
 
-The Git repository contains code, reference hashes, and the 12 matched Electricity baseline checkpoints. Raw datasets, physical-support files, and the other 72 historical checkpoints remain external. Keep the filenames and checksums in [`manifests/reference_artifact_hashes.csv`](../manifests/reference_artifact_hashes.csv); expected hashes for data/support inputs are also embedded in [`configs/main_experiments.json`](../configs/main_experiments.json).
+The Git repository contains code, reference hashes, all 14 raw-data/physical-support assets, and the 12 matched Electricity baseline checkpoints. The other 72 historical checkpoints remain external. Expected hashes for all data/support inputs are embedded in [`configs/main_experiments.json`](../configs/main_experiments.json), and all reference artifacts are listed in [`manifests/reference_artifact_hashes.csv`](../manifests/reference_artifact_hashes.csv).
 
 | Dataset | Raw input path | Physical-support path | Nodes | Split | Horizons |
 | --- | --- | --- | ---: | --- | --- |
@@ -34,4 +34,4 @@ Run a strict data/support hash check before training:
 python scripts/preflight.py --project-root data
 ```
 
-The runner refuses to start if an input is missing or differs from the reference hash. Raw data, graphs, logs, and generated results are not tracked in Git. The 12 reference Electricity checkpoints are intentionally tracked; other optional baseline weights remain ignored by default. Keep the generated `data/run_manifest.json`, per-cell `result.json` files, and their hashes with the experiment record.
+The runner refuses to start if an input is missing or differs from the reference hash. Raw data, physical-support files, and the 12 reference Electricity checkpoints are tracked in Git. Training logs, generated results, and optional baseline weights for other datasets remain outside Git by default. Keep the generated `data/run_manifest.json`, per-cell `result.json` files, and their hashes with the experiment record.

@@ -1,0 +1,437 @@
+{
+  "schema_version": "weather-semantic-candidates-v1",
+  "dataset": "Weather",
+  "num_variables": 21,
+  "variable_names": [
+    "H2OC (mmol/mol)",
+    "PAR (�mol/m�/s)",
+    "SWDR (W/m�)",
+    "T (degC)",
+    "Tdew (degC)",
+    "Tlog (degC)",
+    "Tpot (K)",
+    "VPact (mbar)",
+    "VPdef (mbar)",
+    "VPmax (mbar)",
+    "max. PAR (�mol/m�/s)",
+    "max. wv (m/s)",
+    "p (mbar)",
+    "rain (mm)",
+    "raining (s)",
+    "rh (%)",
+    "rho (g/m**3)",
+    "sh (g/kg)",
+    "wd (deg)",
+    "wv (m/s)",
+    "OT"
+  ],
+  "variable_to_index": {
+    "H2OC (mmol/mol)": 0,
+    "PAR (�mol/m�/s)": 1,
+    "SWDR (W/m�)": 2,
+    "T (degC)": 3,
+    "Tdew (degC)": 4,
+    "Tlog (degC)": 5,
+    "Tpot (K)": 6,
+    "VPact (mbar)": 7,
+    "VPdef (mbar)": 8,
+    "VPmax (mbar)": 9,
+    "max. PAR (�mol/m�/s)": 10,
+    "max. wv (m/s)": 11,
+    "p (mbar)": 12,
+    "rain (mm)": 13,
+    "raining (s)": 14,
+    "rh (%)": 15,
+    "rho (g/m**3)": 16,
+    "sh (g/kg)": 17,
+    "wd (deg)": 18,
+    "wv (m/s)": 19,
+    "OT": 20
+  },
+  "edges": [
+    [
+      3,
+      6,
+      12
+    ],
+    [
+      7,
+      8,
+      9,
+      15
+    ],
+    [
+      3,
+      9
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      7,
+      12,
+      17
+    ],
+    [
+      0,
+      7,
+      12
+    ],
+    [
+      0,
+      3,
+      12,
+      16
+    ],
+    [
+      11,
+      18,
+      19
+    ],
+    [
+      13,
+      14
+    ],
+    [
+      1,
+      2,
+      10
+    ],
+    [
+      5
+    ],
+    [
+      20
+    ]
+  ],
+  "edge_metadata": [
+    {
+      "edge_index": 0,
+      "families": [
+        "potential_temperature"
+      ],
+      "evidence_type": "domain_relation_hypothesis",
+      "evidence_types": [
+        "domain_relation_hypothesis"
+      ],
+      "relation_class": "domain_relation_hypothesis",
+      "member_names": [
+        "T (degC)",
+        "Tpot (K)",
+        "p (mbar)"
+      ],
+      "canonical_members": [
+        "T",
+        "Tpot",
+        "p"
+      ],
+      "anchor": 12,
+      "anchor_name": "p (mbar)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 1,
+      "families": [
+        "vapor_pressure_humidity"
+      ],
+      "evidence_type": "domain_relation_hypothesis",
+      "evidence_types": [
+        "domain_relation_hypothesis"
+      ],
+      "relation_class": "domain_relation_hypothesis",
+      "member_names": [
+        "VPact (mbar)",
+        "VPdef (mbar)",
+        "VPmax (mbar)",
+        "rh (%)"
+      ],
+      "canonical_members": [
+        "VPact",
+        "VPdef",
+        "VPmax",
+        "rh"
+      ],
+      "anchor": 9,
+      "anchor_name": "VPmax (mbar)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 2,
+      "families": [
+        "temperature_saturation_pressure"
+      ],
+      "evidence_type": "domain_relation_hypothesis",
+      "evidence_types": [
+        "domain_relation_hypothesis"
+      ],
+      "relation_class": "domain_relation_hypothesis",
+      "member_names": [
+        "T (degC)",
+        "VPmax (mbar)"
+      ],
+      "canonical_members": [
+        "T",
+        "VPmax"
+      ],
+      "anchor": 3,
+      "anchor_name": "T (degC)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 3,
+      "families": [
+        "dewpoint_actual_vapor_pressure"
+      ],
+      "evidence_type": "domain_relation_hypothesis",
+      "evidence_types": [
+        "domain_relation_hypothesis"
+      ],
+      "relation_class": "domain_relation_hypothesis",
+      "member_names": [
+        "Tdew (degC)",
+        "VPact (mbar)"
+      ],
+      "canonical_members": [
+        "Tdew",
+        "VPact"
+      ],
+      "anchor": 4,
+      "anchor_name": "Tdew (degC)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 4,
+      "families": [
+        "specific_humidity_pressure"
+      ],
+      "evidence_type": "domain_relation_hypothesis",
+      "evidence_types": [
+        "domain_relation_hypothesis"
+      ],
+      "relation_class": "domain_relation_hypothesis",
+      "member_names": [
+        "VPact (mbar)",
+        "p (mbar)",
+        "sh (g/kg)"
+      ],
+      "canonical_members": [
+        "VPact",
+        "p",
+        "sh"
+      ],
+      "anchor": 12,
+      "anchor_name": "p (mbar)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 5,
+      "families": [
+        "water_concentration_pressure"
+      ],
+      "evidence_type": "domain_relation_hypothesis",
+      "evidence_types": [
+        "domain_relation_hypothesis"
+      ],
+      "relation_class": "domain_relation_hypothesis",
+      "member_names": [
+        "H2OC (mmol/mol)",
+        "VPact (mbar)",
+        "p (mbar)"
+      ],
+      "canonical_members": [
+        "H2OC",
+        "VPact",
+        "p"
+      ],
+      "anchor": 12,
+      "anchor_name": "p (mbar)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 6,
+      "families": [
+        "density_temperature_water"
+      ],
+      "evidence_type": "domain_relation_hypothesis",
+      "evidence_types": [
+        "domain_relation_hypothesis"
+      ],
+      "relation_class": "domain_relation_hypothesis",
+      "member_names": [
+        "H2OC (mmol/mol)",
+        "T (degC)",
+        "p (mbar)",
+        "rho (g/m**3)"
+      ],
+      "canonical_members": [
+        "H2OC",
+        "T",
+        "p",
+        "rho"
+      ],
+      "anchor": 12,
+      "anchor_name": "p (mbar)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 7,
+      "families": [
+        "wind_measurements"
+      ],
+      "evidence_type": "measurement_group",
+      "evidence_types": [
+        "measurement_group"
+      ],
+      "relation_class": "measurement_group",
+      "member_names": [
+        "max. wv (m/s)",
+        "wd (deg)",
+        "wv (m/s)"
+      ],
+      "canonical_members": [
+        "max.wv",
+        "wd",
+        "wv"
+      ],
+      "anchor": 19,
+      "anchor_name": "wv (m/s)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 8,
+      "families": [
+        "precipitation_measurements"
+      ],
+      "evidence_type": "measurement_group",
+      "evidence_types": [
+        "measurement_group"
+      ],
+      "relation_class": "measurement_group",
+      "member_names": [
+        "rain (mm)",
+        "raining (s)"
+      ],
+      "canonical_members": [
+        "rain",
+        "raining"
+      ],
+      "anchor": 13,
+      "anchor_name": "rain (mm)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 9,
+      "families": [
+        "radiation_measurements"
+      ],
+      "evidence_type": "measurement_group",
+      "evidence_types": [
+        "measurement_group"
+      ],
+      "relation_class": "measurement_group",
+      "member_names": [
+        "PAR (�mol/m�/s)",
+        "SWDR (W/m�)",
+        "max. PAR (�mol/m�/s)"
+      ],
+      "canonical_members": [
+        "PAR",
+        "SWDR",
+        "max.PAR"
+      ],
+      "anchor": 2,
+      "anchor_name": "SWDR (W/m�)",
+      "direction": "undirected_semantic_candidate",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": false
+    },
+    {
+      "edge_index": 10,
+      "families": [
+        "identity_singleton"
+      ],
+      "evidence_type": "measurement_group",
+      "evidence_types": [
+        "measurement_group"
+      ],
+      "relation_class": "identity_singleton",
+      "member_names": [
+        "Tlog (degC)"
+      ],
+      "canonical_members": [
+        "Tlog"
+      ],
+      "anchor": 5,
+      "anchor_name": "Tlog (degC)",
+      "direction": "identity",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": true
+    },
+    {
+      "edge_index": 11,
+      "families": [
+        "identity_singleton"
+      ],
+      "evidence_type": "measurement_group",
+      "evidence_types": [
+        "measurement_group"
+      ],
+      "relation_class": "identity_singleton",
+      "member_names": [
+        "OT"
+      ],
+      "canonical_members": [
+        "OT"
+      ],
+      "anchor": 20,
+      "anchor_name": "OT",
+      "direction": "identity",
+      "causal_effect_claimed": false,
+      "exact_physical_law_enforced": false,
+      "identity_only": true
+    }
+  ],
+  "construction": {
+    "source": "column_headers_and_predeclared_domain_relation_hypotheses",
+    "uses_data_values": false,
+    "uses_labels": false,
+    "uses_column_order_adjacency": false,
+    "causal_effect_claimed": false,
+    "exact_physical_law_enforced": false,
+    "identity_only_variables": [
+      "Tlog (degC)",
+      "OT"
+    ],
+    "note": "Semantic candidates and measurement groups; no causal or exact-law claim. OT remains uninterpreted."
+  }
+}
