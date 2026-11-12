@@ -18,15 +18,11 @@ Paper Fig. 1 illustrates why PHRM groups sensors by physical support before reus
 
 Paper Fig. 2 summarizes the method: remove a training-fitted periodic reference, build a chronological key-value memory for each physical support, retrieve past records, and return the weighted continuation through the support incidence map.
 
-### Reported results
+### Main results table
 
-![Paper Figure 3: paired TQNet and PHRM results across seven datasets](docs/figures/paper_results_datasets.png)
+![Paper Table IV: matched test results across seven datasets](docs/figures/paper_main_results_table.png)
 
-Paper Fig. 3 compares paired TQNet and PHRM results across seven datasets. Bars report the mean across seeds 2022, 2023, and 2024; error bars show one sample standard deviation. The paper reports a four-horizon PEMS08 mean MSE change from 0.141 to 0.104 and MAE from 0.227 to 0.197.
-
-![Paper Figure 4: prediction-horizon results on four PEMS datasets](docs/figures/paper_results_horizons.png)
-
-Paper Fig. 4 shows the horizon-specific PEMS MSE and relative reduction. The charts use paired runs reported in the manuscript and are not a substitute for rerunning the supplied code with the matching data, physical supports, checkpoints, and experiment settings.
+Paper Table IV reports matched test results over four horizons. Values are mean ± sample standard deviation across seeds 2022, 2023, and 2024; each seed's horizons are averaged before cross-seed statistics. Metrics use training-standardized units, and bold marks the lowest mean in each row. These are manuscript-reported results; reproducing them requires the corresponding data, physical supports, checkpoints, and experiment settings.
 
 ## Reproducibility status
 
