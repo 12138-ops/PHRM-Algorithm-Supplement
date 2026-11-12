@@ -1,0 +1,9 @@
+# Python package pins for the reference environment.
+# Install PyTorch and CUDA through environment.yml to keep the CUDA build explicit.
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.5.2
+scipy==1.14.1
+matplotlib==3.9.2
+ptflops==0.7.4
+PyYAML==6.0.2
