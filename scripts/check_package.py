@@ -12,6 +12,10 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 SRC = REPO / "src"
 EXTERNAL_MODULES = {"matplotlib", "numpy", "pandas", "ptflops", "sklearn", "torch", "vendor_baselines"}
+EXPECTED_SOURCE_ROOTS = {
+    "tqnet_physics_residual_kv_all",
+    "tqnet_physics_residual_kv_pems08_final",
+}
 
 
 def sha256(path: Path) -> str:
@@ -23,6 +27,14 @@ def sha256(path: Path) -> str:
 
 
 def main() -> int:
+    source_roots = {path.name for path in SRC.iterdir() if path.is_dir()}
+    if source_roots != EXPECTED_SOURCE_ROOTS:
+        print(
+            "Unexpected source roots; expected only main-method code: "
+            f"found={sorted(source_roots)}, expected={sorted(EXPECTED_SOURCE_ROOTS)}"
+        )
+        return 1
+
     bad_names = [
         path for path in REPO.rglob("*")
         if "icde" in path.name.lower() or re.search(r"(?<!\d)20\d{6,8}(?!\d)", path.name)
@@ -73,7 +85,7 @@ def main() -> int:
             if not path.is_file() or sha256(path) != expected:
                 print(f"Checksum mismatch: {rel}")
                 return 1
-    print(f"PASS: {len(python_files)} Python files compile; local imports resolve; paths contain no ICDE or date stamps; checksums match.")
+    print(f"PASS: {len(python_files)} Python files compile; only main-method source roots remain; local imports resolve; paths contain no ICDE or date stamps; checksums match.")
     return 0
 
 

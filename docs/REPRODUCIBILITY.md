@@ -12,10 +12,12 @@ For each baseline/PHRM pair, the runner records the command, source revision whe
 
 The reference runner fixes seeds, does not shuffle validation/test windows, uses the source scripts' chronological splits, and runs one job at a time. The source implementations set deterministic cuDNN flags where provided. CUDA kernels can still differ across GPU architectures, driver versions, and library builds; compare saved protocol metadata and environment manifests before interpreting small metric differences.
 
+## Main-method code for other datasets
+
+`src/tqnet_physics_residual_kv_all/` contains the dataset-parameterized main method and paired TQNet baseline. The baseline command accepts an NPZ `data` array shaped `[time, nodes, channels]`. PHRM additionally needs an edge CSV and the matching baseline checkpoint. Consult each CLI's `--help` output and provide the dataset-specific horizon, cycle, split, seed, node count, and paths. This code path is included for the main method; it does not include ablation or sensitivity jobs.
+
 ## Reproducing the paper tables
 
 The dataset/horizon index is in `configs/paper_datasets.json`. It is not a complete executable experiment plan. The archive did not provide the per-table job manifests, baseline recipes, processed data, physical support files, checkpoints, or result files described in the paper. Before claiming table-level reproduction, restore and hash those exact items, and run the source snapshot tied to the target experiment. In particular, the repository contains multiple PEMS08 split variants; use the one tied to the target table rather than substituting the `strict70` profile.
 
-## Historical scripts
-
-Scripts in `src/` are retained for transparency. They can require Linux-specific facilities, multiple external project trees referenced through `PHRM_PROJECTS_ROOT`, and third-party code that is not vendored here. The dispatch helpers launch the included evidence and three-claim CLIs on one explicitly selected GPU; they do not create missing manifests or assets. Consult each script's argument parser and the data requirements before launching it.
+The package intentionally focuses on main-method experiments. It does not include ablation, sensitivity, support-counterfactual, efficiency, or retrieval-diagnostic jobs.

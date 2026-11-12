@@ -13,8 +13,8 @@ dataset/physical/PEMS08_physical_candidates.json
 
 The NPZ must include `data` shaped `[time, 170, 1]`. The graph JSON must include `edges`, a list of groups of zero-based node indices in `[0, 169]`. The runner trains the paired base checkpoint itself, then passes that exact checkpoint to PHRM. No pre-existing checkpoint is needed for this profile.
 
-## Other archived source roots
+## Dataset-parameterized main method
 
-The multi-dataset and later evidence snapshots read additional raw datasets, physical edge/metadata files, processed splits, checkpoints and result references from the directory layout selected by `PHRM_PROJECTS_ROOT` or script arguments. Some evidence scripts also use external baseline implementations. Those trees and their exact revisions were not present in the supplied archive. Check the `SPECS`, `settings.py`, CLI arguments, and `protocol.py` in the target source snapshot; paths from another snapshot are not interchangeable.
+The generic main-method scripts under `src/tqnet_physics_residual_kv_all/` accept a dataset NPZ, a physical edge CSV, and a trained TQNet checkpoint. The NPZ must contain a `data` array shaped `[time, nodes, channels]`. Supply the dataset-specific node count, forecast horizon, cycle, seed, and chronological split explicitly. `train_tqnet_base_generic.py` creates the paired TQNet checkpoint; `train_tqnet_physicskv_generic.py` consumes that exact checkpoint and writes the PHRM result and adapter.
 
-The paper names the official GTR implementation at commit `d941619` and RAFT at commit `bfe2320` for its comparisons. These third-party implementations are not included here. Restore the relevant upstream code at the stated revision and retain its license notices before running the corresponding comparisons.
+The source archive does not include complete table-specific manifests or all input graphs, checkpoints, and third-party baseline implementations. The package therefore provides the main-method code and a runnable PEMS08 reference profile, while full reproduction of every reported comparison requires restoring and hashing the matching inputs and baseline sources.
