@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this package, please cite the associated manuscript listed below."
+type: software
+title: "PHRM: Physical Hypergraph Residual Memory for Time Series Forecasting"
+authors:
+  - family-names: Jiang
+    given-names: Junhui
+url: "https://github.com/12138-ops/PHRM-Algorithm-Supplement"
+repository-code: "https://github.com/12138-ops/PHRM-Algorithm-Supplement"
+preferred-citation:
+  type: unpublished
+  title: "PHRM: Physical Hypergraph Residual Memory for Time Series Forecasting"
+  authors:
+    - family-names: Ding
+      given-names: Jiaman
+    - family-names: Jiang
+      given-names: Junhui
+    - family-names: Jia
+      given-names: Lianyin
+    - family-names: Hu
+      given-names: Qingmeng
+  note: "No DOI or final publication record is included in this repository snapshot."

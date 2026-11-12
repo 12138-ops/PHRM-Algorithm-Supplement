@@ -111,7 +111,7 @@ Outputs are written under `data/results/`. The summary first averages each seed'
 
 ## Reproducibility limits
 
-The repository includes the 12 Electricity baseline checkpoints, but not the 14 raw-data/physical-support files or the other 72 historical baseline checkpoints. Their expected hashes and portable filenames are recorded in the manifest. Electricity requires its matching TQNet checkpoints because its source snapshot has no baseline-training entry point. For exact reproduction of all originally recorded model pairs, obtain the remaining referenced checkpoints. Freshly retrained baselines can produce small numerical differences across PyTorch, CUDA, driver, and GPU versions.
+The repository includes all 14 raw-data/physical-support files and the 12 matched Electricity baseline checkpoints. The other 72 historical baseline checkpoints remain external; their portable filenames and expected hashes are recorded in the manifest. Electricity requires its matching TQNet checkpoints because its source snapshot has no baseline-training entry point. For exact reuse of all originally recorded model pairs, obtain the remaining referenced checkpoints. Freshly retrained baselines can produce small numerical differences across PyTorch, CUDA, driver, and GPU versions.
 
 The repository does not claim a complete rerun of the manuscript results until every configured cell completes. The included data/support assets and Electricity checkpoints pass the repository's hash checks. Use `data/run_manifest.json` and the generated `result.json` files to audit a run.
 
@@ -119,7 +119,8 @@ The repository does not claim a complete rerun of the manuscript results until e
 
 ```bash
 python scripts/build_manifests.py
+python scripts/verify_checksums.py
 python scripts/check_package.py
 ```
 
-`LICENSE` preserves the rights-status notice supplied with the source. Confirm project ownership and third-party terms before redistribution.
+For the source lineage, Git authorship record, and limits of the available evidence, see [`docs/PROVENANCE.md`](docs/PROVENANCE.md), [`docs/AUTHORSHIP_RECORD.md`](docs/AUTHORSHIP_RECORD.md), and [`docs/EVIDENCE.md`](docs/EVIDENCE.md). The manuscript citation is also provided in [`CITATION.cff`](CITATION.cff). `LICENSE` preserves the rights-status notice supplied with the source; it does not grant a general reuse license.
