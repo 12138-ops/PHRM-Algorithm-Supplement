@@ -79,7 +79,7 @@ def residual_future(y, origins, daily, weekly):
     return y - phase
 
 
-def edge_descriptors(residual, origins, edge_pool):
+def edge_descriptors(residual, origins, edge_pool, period=288):
     """Return 13 interpretable descriptors for every physical hyperedge."""
     # residual [B, S, N] -> edge signal [B, S, E]
     series = torch.einsum("bsn,ne->bse", residual, edge_pool)
@@ -99,7 +99,7 @@ def edge_descriptors(residual, origins, edge_pool):
     dstd = diff[:, -min(24, diff.shape[1]):].std(1, unbiased=False) if diff.shape[1] else dlast
     abs_last = last.abs()
     abs_mean = series[:, -min(24, s):].abs().mean(1)
-    phase = origins.to(series.dtype).remainder(288.0) * (2.0 * np.pi / 288.0)
+    phase = origins.to(series.dtype).remainder(float(period)) * (2.0 * np.pi / float(period))
     sin_phase, cos_phase = phase.sin()[:, None], phase.cos()[:, None]
     # [B, E, 13]
     return torch.cat(
@@ -205,7 +205,7 @@ class TQNetPhysicsKV(nn.Module):
         with torch.no_grad():
             base = self.base(x, cycle)
         rh = residual_history(x, origins, self.daily, self.weekly)
-        query = edge_descriptors(rh, origins, self.edge_pool)
+        query = edge_descriptors(rh, origins, self.edge_pool, period=self.daily.shape[0])
         edge_memory, edge_var, support, nearest = bank.retrieve(query, origins, x.shape[1])
         # Incidence normalization injects one edge trajectory to every physical member.
         edge_weight = support / (1.0 + nearest.squeeze(-1))

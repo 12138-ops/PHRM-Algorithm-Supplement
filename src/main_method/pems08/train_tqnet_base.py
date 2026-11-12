@@ -46,7 +46,7 @@ def main():
     p.add_argument("--root", default=".")
     p.add_argument("--horizon", type=int, required=True, choices=[12, 24, 48, 96])
     p.add_argument("--seed", type=int, required=True)
-    p.add_argument("--split", choices=["70/10/20", "60/20/20"], default="70/10/20")
+    p.add_argument("--split", choices=["60/20/20"], default="60/20/20")
     p.add_argument("--epochs", type=int, default=30)
     p.add_argument("--patience", type=int, default=5)
     p.add_argument("--batch_size", type=int, default=32)

@@ -1,12 +1,21 @@
 """Deterministic graph-to-hypergraph conversion for the unified runner."""
 
 import csv
+import json
 from pathlib import Path
 
 import torch
 
 
 def load_graph(path: Path, num_nodes: int, max_edges: int = 512, max_edge_size: int = 32):
+    if path.suffix=='.json':
+        payload=json.loads(path.read_text())
+        assert payload['variable_names']==['HUFL','HULL','MUFL','MULL','LUFL','LULL','OT'] and num_nodes==7
+        edges=payload['edges']; incidence=torch.zeros(num_nodes,len(edges),dtype=torch.float32)
+        for k,e in enumerate(edges):
+            assert 2<=len(set(e))==len(e)<=num_nodes and all(0<=n<num_nodes for n in e)
+            incidence[e,k]=1
+        return dict(incidence=incidence,pool=incidence/incidence.sum(1,keepdim=True).clamp_min(1),edge_pool=incidence/incidence.sum(0,keepdim=True),edges=edges,num_nodes=num_nodes)
     pairs = set()
     neighbors = [set() for _ in range(num_nodes)]
     with path.open(newline="", encoding="utf-8") as handle:

@@ -208,7 +208,7 @@ def main():
     p.add_argument("--root", default=".")
     p.add_argument("--horizon", type=int, required=True, choices=[12, 24, 48, 96])
     p.add_argument("--seed", type=int, required=True)
-    p.add_argument("--split", choices=["70/10/20", "60/20/20"], default="70/10/20")
+    p.add_argument("--split", choices=["60/20/20"], default="60/20/20")
     p.add_argument("--epochs", type=int, default=20)
     p.add_argument("--patience", type=int, default=5)
     p.add_argument("--batch_size", type=int, default=16)
@@ -329,7 +329,7 @@ def main():
     # calibrate a per-forecast-step residual weight on the validation split.
     # The selected vector is then frozen and reused for test evaluation.
     raw_val_metrics = evaluate(model, val_loader, bank, device, residual_weight=None)
-    if h in (12, 24):
+    if True:
         gate_calibration = calibrate_horizon_gate(model, val_loader, bank, device)
         selected_weight = torch.tensor(
             gate_calibration["weights"], dtype=torch.float32, device=device

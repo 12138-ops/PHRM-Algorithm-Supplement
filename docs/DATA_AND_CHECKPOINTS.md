@@ -1,20 +1,37 @@
-# Data, graph and checkpoint inputs
+# Data, physical supports, and checkpoints
 
-No raw datasets, graph files, pretrained checkpoints, generated results, or logs are included. Obtain each input from its legitimate source and follow its terms. Never put large data or checkpoint binaries into Git; keep a separate, access-controlled asset directory and record SHA256 values in the run manifest.
+The Git repository contains code and reference hashes, not large data or checkpoint binaries. Put assets under `data/` and retain the filenames and checksums in [`manifests/reference_artifact_hashes.csv`](../manifests/reference_artifact_hashes.csv). The expected hashes are also embedded for each data/support input in [`configs/main_experiments.json`](../configs/main_experiments.json).
 
-## PEMS08 strict70 profile
+| Dataset | Raw input path | Physical-support path | Nodes | Split | Horizons |
+| --- | --- | --- | ---: | --- | --- |
+| PEMS03 | `data/raw/PEMS03.npz` | `data/physical/PEMS03_indexed.csv` | 358 | 60/20/20 | 12, 24, 48, 96 |
+| PEMS04 | `data/raw/PEMS04.npz` | `data/physical/PEMS04.csv` | 307 | 60/20/20 | 12, 24, 48, 96 |
+| PEMS07 | `data/raw/PEMS07.npz` | `data/physical/PEMS07.csv` | 883 | 60/20/20 | 12, 24, 48, 96 |
+| PEMS08 | `data/pems08/dataset/PEMS08_data.npz` | `data/pems08/dataset/physical/PEMS08_physical_candidates.json` | 170 | 60/20/20 | 12, 24, 48, 96 |
+| Solar | `data/raw/solar_AL.txt` | `data/physical/Solar.csv` | 137 | 70/10/20 | 96, 192, 336, 720 |
+| Electricity | `data/raw/electricity_OT.csv` | `data/physical/Electricity.csv` | 321 | 70/10/20 | 96, 192, 336, 720 |
+| Weather | `data/raw/weather_wide.csv` | `data/physical/Weather_semantic.json` | 21 | 70/10/20 | 96, 192, 336, 720 |
 
-The top-level runner expects this layout under `--project-root`:
+All runs use lookback 96 and seeds 2022, 2023, and 2024. The archive formats, channel ordering, chronological splits, periodic settings, and main-method training parameters are recorded in the dataset source roots and `configs/main_experiments.json`.
+
+## Electricity baseline checkpoints
+
+Electricity needs 12 paired TQNet checkpoints. Store them as:
 
 ```text
-dataset/PEMS08_data.npz
-dataset/physical/PEMS08_physical_candidates.json
+data/checkpoints/Electricity/h{horizon}/seed{seed}.pth
 ```
 
-The NPZ must include `data` shaped `[time, 170, 1]`. The graph JSON must include `edges`, a list of groups of zero-based node indices in `[0, 169]`. The runner trains the paired base checkpoint itself, then passes that exact checkpoint to PHRM. No pre-existing checkpoint is needed for this profile.
+For example, `h96/seed2022.pth`. Each checkpoint must match the TQNet architecture used by the Electricity source root. Expected SHA256 values and byte sizes are listed in the reference artifact manifest.
 
-## Dataset-parameterized main method
+The root runner trains paired TQNet baselines for the other six datasets by default. To use the exact 84 historical paired baselines instead, place them under `data/checkpoints/{dataset}/h{horizon}/seed{seed}.pth` using the entries in the reference artifact manifest and pass `--reuse-baselines`. The runner checks each file against its expected SHA256 before using it. Electricity always uses its 12 reference checkpoints.
 
-The generic main-method scripts under `src/tqnet_physics_residual_kv_all/` accept a dataset NPZ, a physical edge CSV, and a trained TQNet checkpoint. The NPZ must contain a `data` array shaped `[time, nodes, channels]`. Supply the dataset-specific node count, forecast horizon, cycle, seed, and chronological split explicitly. `train_tqnet_base_generic.py` creates the paired TQNet checkpoint; `train_tqnet_physicskv_generic.py` consumes that exact checkpoint and writes the PHRM result and adapter.
+## Validation
 
-The source archive does not include complete table-specific manifests or all input graphs, checkpoints, and third-party baseline implementations. The package therefore provides the main-method code and a runnable PEMS08 reference profile, while full reproduction of every reported comparison requires restoring and hashing the matching inputs and baseline sources.
+Run a strict data/support hash check before training:
+
+```bash
+python scripts/preflight.py --project-root data
+```
+
+The runner refuses to start if an input is missing or differs from the reference hash. Do not put data, graphs, weights, logs, or generated results in Git. Keep the generated `data/run_manifest.json`, the per-cell `result.json` files, and their hashes with the experiment record.

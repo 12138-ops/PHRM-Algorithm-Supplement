@@ -13,8 +13,7 @@ REPO = Path(__file__).resolve().parents[1]
 SRC = REPO / "src"
 EXTERNAL_MODULES = {"matplotlib", "numpy", "pandas", "ptflops", "sklearn", "torch", "vendor_baselines"}
 EXPECTED_SOURCE_ROOTS = {
-    "tqnet_physics_residual_kv_all",
-    "tqnet_physics_residual_kv_pems08_final",
+    "pems03", "pems04", "pems07", "pems08", "solar", "electricity", "weather",
 }
 
 
@@ -27,7 +26,8 @@ def sha256(path: Path) -> str:
 
 
 def main() -> int:
-    source_roots = {path.name for path in SRC.iterdir() if path.is_dir()}
+    main_root = SRC / "main_method"
+    source_roots = {path.name for path in main_root.iterdir() if path.is_dir()} if main_root.is_dir() else set()
     if source_roots != EXPECTED_SOURCE_ROOTS:
         print(
             "Unexpected source roots; expected only main-method code: "
@@ -56,7 +56,11 @@ def main() -> int:
             return 1
 
         if path.is_relative_to(SRC):
-            source_root = SRC / path.relative_to(SRC).parts[0]
+            relative_parts = path.relative_to(SRC).parts
+            if len(relative_parts) < 3 or relative_parts[0] != "main_method":
+                print(f"Unexpected source location: {path.relative_to(REPO)}")
+                return 1
+            source_root = SRC / relative_parts[0] / relative_parts[1]
             for node in ast.walk(tree):
                 if isinstance(node, ast.Import):
                     names = [alias.name for alias in node.names]
@@ -85,7 +89,7 @@ def main() -> int:
             if not path.is_file() or sha256(path) != expected:
                 print(f"Checksum mismatch: {rel}")
                 return 1
-    print(f"PASS: {len(python_files)} Python files compile; only main-method source roots remain; local imports resolve; paths contain no ICDE or date stamps; checksums match.")
+    print(f"PASS: {len(python_files)} Python files compile; seven main-method roots remain; local imports resolve; filenames follow the repository naming rules; checksums match.")
     return 0
 
 

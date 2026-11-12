@@ -1,23 +1,35 @@
 # Reproducibility guide
 
-## Reference profile in this repository
+## Main-table protocol
 
-`configs/pems08_strict70.json` defines the included end-to-end reference profile. It uses the PEMS08 source root under `src/tqnet_physics_residual_kv_pems08_final/`, lookback 96, a chronological `70/10/20` split, horizons 12/24/48/96, seeds 2022/2023/2024, a validation-selected paired TQNet checkpoint, and a PHRM adapter trained from that checkpoint. Values match the CLI defaults in the referenced scripts and are passed explicitly by `scripts/run_pems08.py`.
+[`configs/main_experiments.json`](../configs/main_experiments.json) defines the seven datasets, seeds, horizons, node counts, splits, data/support paths and dataset-specific run parameters. The paired baseline and PHRM steps are orchestrated by [`scripts/run_main.py`](../scripts/run_main.py).
 
-`python scripts/preflight.py --project-root data/pems08 --require-cuda` checks the environment and the two required inputs. `python scripts/run_pems08.py --project-root data/pems08` runs the full profile sequentially. To inspect commands without starting jobs, add `--dry-run`.
+The pipeline is sequential per cell:
 
-For each baseline/PHRM pair, the runner records the command, source revision when available, source-file hashes, dataset and graph hashes, package versions, GPU model, and CUDA/PyTorch versions in `data/pems08/reproduction_run.json`. Training scripts also save their own checkpoints, histories, validation/test metrics, and protocol metadata below the project root.
+1. Validate data and physical-support SHA256 values.
+2. Fit or load the paired TQNet baseline checkpoint.
+3. Fit PHRM using the same checkpoint and the dataset-specific protocol.
+4. Save `result.json`, adapter weights, logs, and a run manifest with code/input/checkpoint hashes and environment versions.
 
-## Determinism
+The PHRM training scripts build the memory from training origins only and select checkpoints/gates on validation data. Test data is evaluated after the training choices are frozen.
 
-The reference runner fixes seeds, does not shuffle validation/test windows, uses the source scripts' chronological splits, and runs one job at a time. The source implementations set deterministic cuDNN flags where provided. CUDA kernels can still differ across GPU architectures, driver versions, and library builds; compare saved protocol metadata and environment manifests before interpreting small metric differences.
+## Commands
 
-## Main-method code for other datasets
+```bash
+conda env create -f environment.yml
+conda activate phrm-repro
+python scripts/preflight.py --project-root data
+python scripts/run_main.py --project-root data --dry-run
+python scripts/run_main.py --project-root data
+python scripts/summarize_main_results.py --project-root data
+```
 
-`src/tqnet_physics_residual_kv_all/` contains the dataset-parameterized main method and paired TQNet baseline. The baseline command accepts an NPZ `data` array shaped `[time, nodes, channels]`. PHRM additionally needs an edge CSV and the matching baseline checkpoint. Consult each CLI's `--help` output and provide the dataset-specific horizon, cycle, split, seed, node count, and paths. This code path is included for the main method; it does not include ablation or sensitivity jobs.
+Use `--datasets PEMS03 --horizons 12 24 --seeds 2022` to run a smaller set of cells. `Electricity` requires its 12 matching TQNet checkpoints under `data/checkpoints/Electricity/`. By default, the other six baseline trainers create paired checkpoints. To use the exact original baseline pairs for every dataset, provide the 84 checkpoint files listed in the hash manifest and add `--reuse-baselines`; the runner verifies their hashes. Checkpoint and result paths are ignored by Git.
 
-## Reproducing the paper tables
+## Hashes and source provenance
 
-The dataset/horizon index is in `configs/paper_datasets.json`. It is not a complete executable experiment plan. The archive did not provide the per-table job manifests, baseline recipes, processed data, physical support files, checkpoints, or result files described in the paper. Before claiming table-level reproduction, restore and hash those exact items, and run the source snapshot tied to the target experiment. In particular, the repository contains multiple PEMS08 split variants; use the one tied to the target table rather than substituting the `strict70` profile.
+`manifests/reference_artifact_hashes.csv` lists 98 external input fingerprints recorded with the transferred experiment results: 14 data/support assets and 84 paired baseline checkpoints. The raw server paths and private environment records were not copied. `manifests/source_inventory.csv` and `manifests/SHA256SUMS.txt` identify files included in this repository.
 
-The package intentionally focuses on main-method experiments. It does not include ablation, sensitivity, support-counterfactual, efficiency, or retrieval-diagnostic jobs.
+## Limits and reporting
+
+The manuscript's main-results image is a reference figure, not a result generated by this package. No raw data, physical supports, baseline weights, or training outputs are committed. A full rerun cannot start until the required external inputs have been supplied and verified. Fresh baseline training can produce small numerical differences across library, driver, and GPU versions. Keep the generated run manifest and all per-cell results with any reported reproduction.

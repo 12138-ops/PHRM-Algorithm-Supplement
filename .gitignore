@@ -16,4 +16,15 @@ data_cache/
 *.npy
 *.csv
 !manifests/source_inventory.csv
+!manifests/reference_artifact_hashes.csv
 *.log
+run_manifest.json
+input_preflight.json
+**/base_checkpoints/
+**/base_checkpoints_60/
+**/base_checkpoints_70/
+**/runs_main/
+**/runs_phase_balanced/
+**/protocol_artifacts/
+**/audit/
+**/logs/
